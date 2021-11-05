@@ -16,3 +16,4 @@ jobs:
           heroku_app_name: 'ci-botaprarodar-api' #Must be unique in Heroku
           heroku_email: 'botaprarodar.web@gmail.com'
           checkstring: 'ok'
+          procfile: "web: npm start"
