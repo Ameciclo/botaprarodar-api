@@ -6,8 +6,9 @@
   "scripts": {
     "build": "rm -rf ./build && tsc",
     "test": "npm run build && jest",
-    "start": "npm run build && node build/index.js",
-    "start-dev": "nodemon src/index.ts"
+    "start": "node build/index.js",
+    "start-dev": "nodemon src/index.ts",
+    "postinstall": "npm run build"
   },
   "author": "",
   "license": "ISC",
