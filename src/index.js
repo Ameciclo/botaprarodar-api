@@ -5,7 +5,7 @@ const app = express();
 app.use(cors());
 
 app.get('/', (req, res) => {
-  res.send('O servidor ta on com teste falhando!');
+  res.send('O servidor ta on!');
 });
 
 const APP_PORT = process.env.PORT || 3000;
