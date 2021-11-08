@@ -5,7 +5,7 @@ const app = express();
 app.use(cors());
 
 app.get('/', (req, res) => {
-  res.send('O servidor ta on!');
+  res.send('O servidor ta on 123!');
 });
 
 const APP_PORT = process.env.PORT || 3000;
