@@ -1,12 +1,31 @@
-# This is the workflow to push to CI (Continuous Integration) environment at heroku
+# This is the workflow to push to Production environment at heroku
 
 name: Deploy to heroku - Production
 on:
   push:
+  pull_request:
     branches:
       - production
 jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: 12.x
+      - run: npm ci
+
+  test:
+    needs: [build]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - run: npm ci
+      - run: npm run test
+
   deploy:
+    needs: [test]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
