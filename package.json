@@ -5,7 +5,7 @@
   "main": "build/index.js",
   "scripts": {
     "build": "rm -rf ./build && tsc",
-    "test": "npm run build && jest --coverage",
+    "test": "rm -rf ./coverage && npm run build && jest --coverage",
     "start": "node build/index.js",
     "start-dev": "nodemon src/index.ts",
     "postinstall": "npm run build"
