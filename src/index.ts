@@ -1,10 +1,7 @@
-import express from 'express';
-import cors from 'cors';
+import { Request, Response } from 'express';
+import app from './app';
 
-const app = express();
-app.use(cors());
-
-app.get('/', (req, res) => {
+app.get('/', (req: Request, res: Response): void => {
   res.send('O servidor ta on!');
 });
 
