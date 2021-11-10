@@ -1,5 +1,11 @@
+import express from 'express';
+import cors from 'cors';
+import * as core from 'express-serve-static-core';
 import { Request, Response } from 'express';
-import app from './app';
+
+const app: core.Express = express();
+
+app.use(cors());
 
 app.get('/', (req: Request, res: Response): void => {
   res.send('O servidor ta on!');
