@@ -11,8 +11,16 @@ app.use(bodyParser.json());
 app.use(routes);
 
 const APP_PORT = process.env.PORT || 3000;
-app.listen(APP_PORT, () => {
+const server = app.listen(APP_PORT, () => {
+//server = app.listen(APP_PORT, () => {
   console.log(`Servidor iniciado na porta ${APP_PORT}`);
 });
+
+//
+app.get('/quit', function(req,res) {
+  res.send('closing..');
+  server.close();
+});
+//
 
 export default app;
