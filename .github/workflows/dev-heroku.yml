@@ -41,7 +41,7 @@ jobs:
         with:
           name: coverage
           path: coverage/lcov.info
-      - run: ls
+      - run: ls coverage
       - uses: SonarSource/sonarcloud-github-action@master
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
