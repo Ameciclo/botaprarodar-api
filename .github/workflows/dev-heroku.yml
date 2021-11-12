@@ -34,15 +34,15 @@ jobs:
 
   sonar:
     needs: [test]
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/download-artifact@v2
         with:
           name: coverage
           path: coverage/lcov.info
-      - name: SonarCloud Scan
-          uses: SonarSource/sonarcloud-github-action@master
-          env:
-            SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      - uses: SonarSource/sonarcloud-github-action@master
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
   deploy:
     needs: [test]
