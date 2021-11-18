@@ -1,76 +1,65 @@
 import { SystemUser } from '../models/SystemUser';
-import {
-  getDatabase,
-  ref,
-  child,
-  get,
-  query,
-  orderByChild,
-  onValue,
-  equalTo,
-  push,
-  set,
-  update,
-  remove,
-  startAt,
-  endAt,
-  DataSnapshot,
-} from 'firebase/database';
 import { ESystemUserType } from '../models/ESystemUserType';
-import systemUserController from '../controllers/SystemUserController';
+import { GenericMapper } from './GenericMapper';
 
+const systemUserPath = 'SystemUser';
 export abstract class SystemUserMapper {
-  public static userExistsByEmail = async (email: string): Promise<any> => {
-    const dbRef = ref(getDatabase(), 'SystemUser');
-    const data = await get(query(dbRef, orderByChild('email'), equalTo(email)))
-      .then((snapshot) => {
-        console.log(snapshot.val());
-      })
-      .catch((err) => console.log(err));
+  private static validate = (json: any): string[] => {
+    let erros: string[] = [];
 
-    // const systemUser = await get(data)
-    //   .then((snapshot) => {
-    //     return snapshot.val();
-    //   })
-    //   .catch((err) => console.log(err));
-    // console.log(systemUser);
-
-    return true;
-
-    // onValue(data, (snapshot) => {
-    //   return snapshot.val();
-    // });
+    if (!json.email) {
+      erros.push('SystemUser deve conter o campo email.');
+    }
+    if (!json.type) {
+      erros.push('SystemUser deve conter o campo tipo.');
+    }
+    if (!json.password) {
+      erros.push('SystemUser deve conter o campo senha.');
+    }
+    return erros;
   };
 
-  public static getAllSystemUsers = () => {};
+  public static convertJsonToSystemUser = (
+    json: any,
+    id: string
+  ): SystemUser => {
+    let systemUser: SystemUser;
+    const errorList = this.validate(json);
+    if (errorList.length === 0) {
+      systemUser = { id, ...json };
+      return systemUser;
+    } else {
+      throw new Error(errorList.join(', '));
+    }
+  };
+
+  public static convertJsonToSystemUserAll = (json: any): SystemUser[] => {
+    let systemUserList: SystemUser[];
+    systemUserList = Object.keys(json).map((id) => {
+      return this.convertJsonToSystemUser(json[id], id);
+    });
+    return systemUserList;
+  };
+
+  public static userExistsByEmail = async (email: string): Promise<boolean> => {
+    if (await this.getUserByEmail(email)) return true;
+    else return false;
+  };
+
+  public static getUserByEmail = async (
+    email: string
+  ): Promise<SystemUser | undefined> => {
+    const allSystemUsersJson = await GenericMapper.getAll(systemUserPath);
+    const allSystemUsers = this.convertJsonToSystemUserAll(allSystemUsersJson);
+
+    return allSystemUsers.find((systemUser) => systemUser.email === email);
+  };
 
   public static insertSystemUser = (
     email: string,
     password: string,
     type: ESystemUserType
-  ): boolean => {
-    const db = getDatabase();
-    const postListRef = ref(db, 'SystemUser');
-    const newPostRef = push(postListRef);
-
-    try {
-      set(newPostRef, {
-        email,
-        password,
-        type,
-      });
-      return true;
-    } catch (error) {
-      return false;
-    }
+  ): void => {
+    GenericMapper.insert(systemUserPath, { email, password, type });
   };
-
-  //   public static checkSystemUserType = (email: string): ESystemUserType => {
-  //       const dbRef = ref(getDatabase());
-  //       get(child(dbRef, `SystemUser`)).then(async (snapshot) => {
-  //         if (snapshot.exists()) {
-  //           return snapshot.val().type;
-  //         }
-  //       });
-  //   }
 }

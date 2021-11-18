@@ -8,9 +8,12 @@ systemUserController.post(
   '/',
   async (request: Request, response: Response): Promise<void> => {
     CreateSystemUserRequest.convertBodyToRequest(request.body)
-      .then((createUserRequest) => {
-        SystemUserService.createUser(createUserRequest);
-        response.status(201).send();
+      .then(async (createUserRequest) => {
+        if (await SystemUserService.createUser(createUserRequest)) {
+          response.status(200).send();
+        } else {
+          response.status(400).send('Ja existe um usuario com este e-mail.');
+        }
       })
       .catch((err) => {
         response.status(400).send(err);
