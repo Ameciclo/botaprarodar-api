@@ -1,5 +1,6 @@
 import { CreateSystemUserRequest } from '../dto/requests/SystemUserDtoRequest';
 import { SystemUserMapper } from '../mapper/SystemUserMapper';
+import { ESystemUserType } from '../models/ESystemUserType';
 export class SystemUserService {
   public static createUser = async (
     body: CreateSystemUserRequest
@@ -8,7 +9,9 @@ export class SystemUserService {
       body.emailNewUser
     );
 
-    if (userExists) {
+    const isCurrentUserAdmin = await this.isUserAdmin(body.emailCurrentUser);
+
+    if (userExists || !isCurrentUserAdmin) {
       return false;
     } else {
       SystemUserMapper.insertSystemUser(
@@ -19,5 +22,11 @@ export class SystemUserService {
 
       return SystemUserMapper.userExistsByEmail(body.emailNewUser);
     }
+  };
+
+  private static isUserAdmin = async (email: string): Promise<boolean> => {
+    const user = await SystemUserMapper.getUserByEmail(email);
+
+    return user?.type === ESystemUserType.admin;
   };
 }
