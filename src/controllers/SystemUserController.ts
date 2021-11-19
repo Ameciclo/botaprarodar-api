@@ -9,14 +9,19 @@ systemUserController.post(
   async (request: Request, response: Response): Promise<void> => {
     CreateSystemUserRequest.convertBodyToRequest(request.body)
       .then(async (createUserRequest) => {
-        if (await SystemUserService.createUser(createUserRequest)) {
+        const responseCreateUser = await SystemUserService.createUser(
+          createUserRequest
+        );
+        if (responseCreateUser.success()) {
           response.status(200).send();
         } else {
-          response.status(400).send("Ja existe um usuario com este e-mail.");
+          response
+            .status(400)
+            .send(responseCreateUser.errorMessages.join(", "));
         }
       })
       .catch((err) => {
-        response.status(400).send(err);
+        response.status(500).send(err);
       });
   }
 );
