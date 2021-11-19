@@ -14,7 +14,8 @@ initializeFirebaseApp();
 
 const APP_PORT = process.env.PORT || 3000;
 const server = app.listen(APP_PORT, () => {
-  console.warn(`Servidor iniciado na porta ${APP_PORT}`);
+  // eslint-disable-next-line no-console
+  console.log(`Servidor iniciado na porta ${APP_PORT}`);
 });
 
 export { app, server };
