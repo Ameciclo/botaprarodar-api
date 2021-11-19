@@ -1,25 +1,25 @@
-import { SystemUser } from '../models/SystemUser';
-import { ESystemUserType } from '../models/ESystemUserType';
-import { GenericMapper } from './GenericMapper';
+import { SystemUser } from "../models/SystemUser";
+import ESystemUserType from "../models/ESystemUserType";
+import GenericMapper from "./GenericMapper";
 
-const systemUserPath = 'SystemUser';
-export abstract class SystemUserMapper {
+const systemUserPath = "SystemUser";
+export default abstract class SystemUserMapper {
   private static validate = (json: any): string[] => {
-    let erros: string[] = [];
+    const erros: string[] = [];
 
     if (!json.email) {
-      erros.push('SystemUser deve conter o campo email.');
+      erros.push("SystemUser deve conter o campo email.");
     }
     if (!json.type) {
-      erros.push('SystemUser deve conter o campo tipo.');
+      erros.push("SystemUser deve conter o campo tipo.");
     }
     if (!json.password) {
-      erros.push('SystemUser deve conter o campo senha.');
+      erros.push("SystemUser deve conter o campo senha.");
     }
     return erros;
   };
 
-  public static convertJsonToSystemUser = (
+  private static convertJsonToSystemUser = (
     json: any,
     id: string
   ): SystemUser => {
@@ -28,22 +28,20 @@ export abstract class SystemUserMapper {
     if (errorList.length === 0) {
       systemUser = { id, ...json };
       return systemUser;
-    } else {
-      throw new Error(errorList.join(', '));
     }
+    throw new Error(errorList.join(", "));
   };
 
-  public static convertJsonToSystemUserAll = (json: any): SystemUser[] => {
-    let systemUserList: SystemUser[];
-    systemUserList = Object.keys(json).map((id) => {
-      return this.convertJsonToSystemUser(json[id], id);
-    });
+  private static convertJsonToSystemUserAll = (json: any): SystemUser[] => {
+    const systemUserList: SystemUser[] = Object.keys(json).map((id) =>
+      this.convertJsonToSystemUser(json[id], id)
+    );
     return systemUserList;
   };
 
   public static userExistsByEmail = async (email: string): Promise<boolean> => {
     if (await this.getUserByEmail(email)) return true;
-    else return false;
+    return false;
   };
 
   public static getUserByEmail = async (

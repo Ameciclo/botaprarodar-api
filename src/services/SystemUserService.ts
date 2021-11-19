@@ -1,7 +1,8 @@
-import { CreateSystemUserRequest } from '../dto/requests/SystemUserDtoRequest';
-import { SystemUserMapper } from '../mapper/SystemUserMapper';
-import { ESystemUserType } from '../models/ESystemUserType';
-export class SystemUserService {
+import CreateSystemUserRequest from "../dto/requests/SystemUserDtoRequest";
+import SystemUserMapper from "../mapper/SystemUserMapper";
+import ESystemUserType from "../models/ESystemUserType";
+
+export default class SystemUserService {
   public static createUser = async (
     body: CreateSystemUserRequest
   ): Promise<boolean> => {
@@ -13,15 +14,14 @@ export class SystemUserService {
 
     if (userExists || !isCurrentUserAdmin) {
       return false;
-    } else {
-      SystemUserMapper.insertSystemUser(
-        body.emailNewUser,
-        body.passwordNewUser,
-        body.typeNewUser
-      );
-
-      return SystemUserMapper.userExistsByEmail(body.emailNewUser);
     }
+    SystemUserMapper.insertSystemUser(
+      body.emailNewUser,
+      body.passwordNewUser,
+      body.typeNewUser
+    );
+
+    return SystemUserMapper.userExistsByEmail(body.emailNewUser);
   };
 
   private static isUserAdmin = async (email: string): Promise<boolean> => {

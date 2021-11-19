@@ -1,3 +1,3 @@
-it('Should pass', () => {
+it("Should pass", () => {
   expect(1).toBe(1);
 });

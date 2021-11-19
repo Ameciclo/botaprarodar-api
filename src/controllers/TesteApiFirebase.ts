@@ -1,4 +1,4 @@
-import { Request, Response, Router } from 'express';
+import { Request, Response, Router } from "express";
 import {
   getDatabase,
   ref,
@@ -12,19 +12,19 @@ import {
   set,
   update,
   remove,
-} from 'firebase/database';
+} from "firebase/database";
 
 const testeApiFirebase = Router();
 
-testeApiFirebase.get('/', (request: Request, response: Response): void => {
+testeApiFirebase.get("/", (request: Request, response: Response): void => {
   const dbRef = ref(getDatabase());
-  get(child(dbRef, `usersTeste`))
+  get(child(dbRef, "usersTeste"))
     .then(async (snapshot) => {
       if (snapshot.exists()) {
         const data = await snapshot.val();
         response.send(data);
       } else {
-        console.log('No data available');
+        console.error("No data available");
       }
     })
     .catch((error) => {
@@ -33,7 +33,7 @@ testeApiFirebase.get('/', (request: Request, response: Response): void => {
 });
 
 testeApiFirebase.get(
-  '/id/:id',
+  "/id/:id",
   (request: Request, response: Response): void => {
     const dbRef = ref(getDatabase());
     get(child(dbRef, `users/${request.params.id}`))
@@ -42,7 +42,7 @@ testeApiFirebase.get(
           const data = await snapshot.val();
           response.send(data);
         } else {
-          console.log('No data available');
+          console.error("No data available");
         }
       })
       .catch((error) => {
@@ -52,34 +52,37 @@ testeApiFirebase.get(
 );
 
 testeApiFirebase.get(
-  '/filtros',
+  "/filtros",
   (request: Request, response: Response): void => {
-    const dbRef = ref(getDatabase(), 'users');
-    const data = query(dbRef, orderByChild('ID'), equalTo(1));
+    const dbRef = ref(getDatabase(), "users");
+    const data = query(dbRef, orderByChild("ID"), equalTo(1));
     //   const data = query(dbRef, orderByChild('nome'), equalTo('Ciclano'));
 
     onValue(data, (snapshot) => {
-      Object.keys(snapshot.val()).map((id) => {
-        response.send({ idReal: id, ...snapshot.val()[id] });
-      });
+      const result = Object.keys(snapshot.val()).map((id) => ({
+        idReal: id,
+        ...snapshot.val()[id],
+      }));
+      response.send(result);
     });
   }
 );
 
-testeApiFirebase.post('/', (request: Request, response: Response): void => {
+testeApiFirebase.post("/", (request: Request, response: Response): void => {
   const db = getDatabase();
-  const postListRef = ref(db, 'users');
+  const postListRef = ref(db, "SystemUser");
   const newPostRef = push(postListRef);
 
   set(newPostRef, {
-    nome: request.body.nome,
-    ID: request.body.ID,
+    email: request.body.emailNewUser,
+    type: request.body.typeNewUser,
+    password: request.body.passwordNewUser,
   });
   response.send();
 });
 
 testeApiFirebase.put(
-  '/id/:id',
+  "/id/:id",
   (request: Request, response: Response): void => {
     const db = getDatabase();
     const postListRef = ref(db, `users/${request.params.id}`);
@@ -97,7 +100,7 @@ testeApiFirebase.put(
 );
 
 testeApiFirebase.delete(
-  '/id/:id',
+  "/id/:id",
   (request: Request, response: Response): void => {
     const db = getDatabase();
     const postListRef = ref(db, `users/${request.params.id}`);
@@ -107,14 +110,14 @@ testeApiFirebase.delete(
   }
 );
 
-testeApiFirebase.post('/loop', (request: Request, response: Response): void => {
+testeApiFirebase.post("/loop", (request: Request, response: Response): void => {
   const db = getDatabase();
-  const postListRef = ref(db, 'users');
+  const postListRef = ref(db, "SystemUser");
 
   const id = 0;
-  const nome = 'Clone';
-  const cidade = 'Salvador';
-  const email = '@clone.com';
+  const nome = "Clone";
+  const cidade = "Salvador";
+  const email = "@clone.com";
 
   for (let i = 0; i < 5; i++) {
     const newPostRef = push(postListRef);
@@ -124,7 +127,7 @@ testeApiFirebase.post('/loop', (request: Request, response: Response): void => {
       cidade: cidade + i,
       email: nome + i + email,
     });
-    console.log('clone', i);
+    console.error("clone", i);
   }
 
   response.send();

@@ -1,4 +1,6 @@
-export enum ESystemUserType {
-  'admin',
-  'manager',
+enum ESystemUserType {
+  admin = "admin",
+  manager = "manager",
 }
+
+export default ESystemUserType;

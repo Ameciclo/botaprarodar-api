@@ -1,4 +1,4 @@
-interface ServiceResponse {
-  status: boolean;
-  errorMessages: string[];
-}
+// interface ServiceResponse {
+//   status: boolean;
+//   errorMessages: string[];
+// }

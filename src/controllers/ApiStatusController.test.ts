@@ -1,11 +1,12 @@
-import { app, server } from '../index';
-import supertest from 'supertest';
+import supertest from "supertest";
+import { app, server } from "../index";
+
 const request = supertest(app);
 
-it('Should return message that server is on', async () => {
-  const response = await request.get('/');
+it("Should return message that server is on", async () => {
+  const response = await request.get("/");
   expect(response.status).toBe(200);
-  expect(response.body.message).toBe('O servidor esta rodando...');
+  expect(response.body.message).toBe("O servidor esta rodando...");
 });
 
 afterAll(() => {

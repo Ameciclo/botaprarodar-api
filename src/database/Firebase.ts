@@ -1,6 +1,6 @@
 // Import the functions you need from the SDKs you need
-import { initializeApp } from 'firebase/app';
-import { getDatabase } from 'firebase/database';
+import { FirebaseApp, initializeApp } from "firebase/app";
+
 const firebaseConfig = {
   apiKey: process.env.APP_API_KEY,
   authDomain: process.env.APP_AUTH_DOMAIN,
@@ -12,6 +12,6 @@ const firebaseConfig = {
   measurementId: process.env.APP_MEASUREMENT_ID,
 };
 
-export const initializeFirebaseApp = () => {
-  initializeApp(firebaseConfig);
-};
+const initializeFirebaseApp = (): FirebaseApp => initializeApp(firebaseConfig);
+
+export default initializeFirebaseApp;
