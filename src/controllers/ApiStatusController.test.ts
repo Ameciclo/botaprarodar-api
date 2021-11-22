@@ -3,12 +3,14 @@ import { app, server } from "../index";
 
 const request = supertest(app);
 
-it("Should return message that server is on", async () => {
-  const response = await request.get("/");
-  expect(response.status).toBe(200);
-  expect(response.body.message).toBe("O servidor esta rodando...");
-});
+describe("ApiStatusController", () => {
+  it("Should return message that server is on", async () => {
+    const response = await request.get("/");
+    expect(response.status).toBe(200);
+    expect(response.body.message).toBe("O servidor esta rodando...");
+  });
 
-afterAll(() => {
-  server.close();
+  afterAll(() => {
+    server.close();
+  });
 });
