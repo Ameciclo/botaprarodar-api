@@ -11,6 +11,7 @@ describe("ApiStatusController", () => {
   });
 
   afterAll(() => {
+    server.removeAllListeners();
     server.close();
   });
 });

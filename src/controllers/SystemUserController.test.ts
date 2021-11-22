@@ -63,6 +63,7 @@ describe("SystemUserController", () => {
   });
 
   afterAll(() => {
+    server.removeAllListeners();
     server.close();
   });
 });
