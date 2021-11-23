@@ -6,7 +6,7 @@ import ServiceResponse from "../models/ServiceResponse";
 export default class SystemUserService {
   public static createUser = async (
     body: CreateSystemUserRequest
-  ): Promise<ServiceResponse> => {
+  ): Promise<ServiceResponse<unknown>> => {
     const response = new ServiceResponse();
     const userExists = await SystemUserMapper.userExistsByEmail(
       body.emailNewUser

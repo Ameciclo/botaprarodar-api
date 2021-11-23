@@ -4,7 +4,7 @@ import GenericMapper from "./GenericMapper";
 import EncryptionService from "../services/EncryptionService";
 
 const systemUserPath = "SystemUser";
-export default abstract class SystemUserMapper {
+export default class SystemUserMapper {
   private static validate = (json: any): string[] => {
     const erros: string[] = [];
 
@@ -13,6 +13,9 @@ export default abstract class SystemUserMapper {
     }
     if (!json.type) {
       erros.push("SystemUser deve conter o campo tipo.");
+    }
+    if (!json.password) {
+      erros.push("SystemUser deve conter o campo senha.");
     }
     return erros;
   };
@@ -27,7 +30,7 @@ export default abstract class SystemUserMapper {
       systemUser = { id, ...json };
       return systemUser;
     }
-    throw new Error(errorList.join(", "));
+    throw new Error(errorList.join(", ")).message;
   };
 
   private static convertJsonToSystemUserAll = (json: any): SystemUser[] => {
@@ -59,7 +62,6 @@ export default abstract class SystemUserMapper {
     const passwordEncrypted = await EncryptionService.encryptPassword(
       randomPassword
     );
-
     GenericMapper.insert(systemUserPath, {
       email,
       password: passwordEncrypted,
