@@ -20,8 +20,8 @@ systemUserController.post(
             .send(responseCreateUser.errorMessages.join(", "));
         }
       })
-      .catch((err) => {
-        response.status(500).send(err);
+      .catch((err: Error) => {
+        response.status(500).send(err.message);
       });
   }
 );

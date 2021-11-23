@@ -1,6 +1,7 @@
 import { SystemUser } from "../models/SystemUser";
 import ESystemUserType from "../models/ESystemUserType";
 import GenericMapper from "./GenericMapper";
+import EncryptionService from "../services/EncryptionService";
 
 const systemUserPath = "SystemUser";
 export default abstract class SystemUserMapper {
@@ -12,9 +13,6 @@ export default abstract class SystemUserMapper {
     }
     if (!json.type) {
       erros.push("SystemUser deve conter o campo tipo.");
-    }
-    if (!json.password) {
-      erros.push("SystemUser deve conter o campo senha.");
     }
     return erros;
   };
@@ -53,11 +51,19 @@ export default abstract class SystemUserMapper {
     return allSystemUsers.find((systemUser) => systemUser.email === email);
   };
 
-  public static insertSystemUser = (
+  public static insertSystemUser = async (
     email: string,
-    password: string,
     type: ESystemUserType
-  ): void => {
-    GenericMapper.insert(systemUserPath, { email, password, type });
+  ): Promise<void> => {
+    const randomPassword = Math.random().toString(36).slice(-10);
+    const passwordEncrypted = await EncryptionService.encryptPassword(
+      randomPassword
+    );
+
+    GenericMapper.insert(systemUserPath, {
+      email,
+      password: passwordEncrypted,
+      type,
+    });
   };
 }

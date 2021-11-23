@@ -11,10 +11,6 @@ export default class CreateSystemUserRequest {
 
   @IsDefined()
   @Expose()
-  passwordNewUser: string;
-
-  @IsDefined()
-  @Expose()
   @IsEnum(ESystemUserType)
   typeNewUser: ESystemUserType;
 

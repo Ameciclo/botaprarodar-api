@@ -13,7 +13,6 @@ describe("SystemUserService", () => {
   it("Should fail at creating user because user already exists", async () => {
     const createUserRequest: CreateSystemUserRequest = {
       emailNewUser: "manager@gmail.com",
-      passwordNewUser: "senha123",
       typeNewUser: ESystemUserType.manager,
       emailCurrentUser: "admin@gmail.com",
     };
@@ -33,7 +32,6 @@ describe("SystemUserService", () => {
   it("Should fail at creating user because current user is not admin", async () => {
     const createUserRequest: CreateSystemUserRequest = {
       emailNewUser: "newManager@gmail.com",
-      passwordNewUser: "senha123",
       typeNewUser: ESystemUserType.manager,
       emailCurrentUser: "manager@gmail.com",
     };
@@ -60,7 +58,6 @@ describe("SystemUserService", () => {
   it("Should fail at creating user because user was not created for some unexpected failure", async () => {
     const createUserRequest: CreateSystemUserRequest = {
       emailNewUser: "newManager@gmail.com",
-      passwordNewUser: "senha123",
       typeNewUser: ESystemUserType.manager,
       emailCurrentUser: "admin@gmail.com",
     };
@@ -87,7 +84,6 @@ describe("SystemUserService", () => {
   it("Should create user sucessfully", async () => {
     const createUserRequest: CreateSystemUserRequest = {
       emailNewUser: "newManager@gmail.com",
-      passwordNewUser: "senha123",
       typeNewUser: ESystemUserType.manager,
       emailCurrentUser: "admin@gmail.com",
     };

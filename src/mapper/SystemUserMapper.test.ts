@@ -39,16 +39,11 @@ describe("SystemUserMapper", () => {
     expect(userExists).toBe(false);
   });
   it("Should call function to insert user", async () => {
-    SystemUserMapper.insertSystemUser(
+    await SystemUserMapper.insertSystemUser(
       "Fulano@gmail.com",
-      "senha123",
       ESystemUserType.manager
     );
-    expect(GenericMapper.insert).toHaveBeenCalledWith("SystemUser", {
-      email: "Fulano@gmail.com",
-      password: "senha123",
-      type: ESystemUserType.manager,
-    });
+    expect(GenericMapper.insert).toHaveBeenCalled();
   });
 
   it("Should fail to return users because it doesn't have email field", () => {

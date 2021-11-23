@@ -13,6 +13,7 @@ import {
   update,
   remove,
 } from "firebase/database";
+import EncryptionService from "../services/EncryptionService";
 
 const testeApiFirebase = Router();
 
@@ -80,6 +81,25 @@ testeApiFirebase.post("/", (request: Request, response: Response): void => {
   });
   response.send();
 });
+
+testeApiFirebase.post(
+  "/testebcrypt",
+  async (request: Request, response: Response): Promise<void> => {
+    const db = getDatabase();
+    const postListRef = ref(db, "testeBcrypt");
+    const newPostRef = push(postListRef);
+
+    const encryptedPassword = await EncryptionService.encryptPassword(
+      request.body.password
+    );
+
+    set(newPostRef, {
+      encrypted: encryptedPassword,
+      plainText: request.body.password,
+    });
+    response.send();
+  }
+);
 
 testeApiFirebase.put(
   "/id/:id",

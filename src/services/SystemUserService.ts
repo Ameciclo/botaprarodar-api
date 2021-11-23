@@ -21,9 +21,8 @@ export default class SystemUserService {
       response.errorMessages.push("Usuario atual nao e administrador.");
       return response;
     }
-    SystemUserMapper.insertSystemUser(
+    await SystemUserMapper.insertSystemUser(
       body.emailNewUser,
-      body.passwordNewUser,
       body.typeNewUser
     );
 
