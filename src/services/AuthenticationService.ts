@@ -1,3 +1,4 @@
+import { NextFunction, Request, Response } from "express";
 import jwt, { Secret } from "jsonwebtoken";
 import SystemUserMapper from "../mapper/SystemUserMapper";
 import ServiceResponse from "../models/ServiceResponse";
@@ -28,5 +29,28 @@ export default class AuthenticationService {
     }
     response.errorMessages.push("Login inválido!");
     return response;
+  };
+
+  public static verifyJWT = (
+    req: Request,
+    res: Response,
+    next: NextFunction
+    // eslint-disable-next-line consistent-return
+  ): Response | void => {
+    const token = req.headers["x-access-token"];
+    if (!token)
+      return res
+        .status(401)
+        .json({ auth: false, message: "Nenhum token foi enviado." });
+
+    // eslint-disable-next-line consistent-return
+    jwt.verify(token as string, process.env.SECRET as string, (err) => {
+      if (err)
+        return res
+          .status(500)
+          .json({ auth: false, message: "Falha ao autenticar o token." });
+
+      next();
+    });
   };
 }

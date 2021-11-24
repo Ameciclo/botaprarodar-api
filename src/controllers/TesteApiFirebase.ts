@@ -1,5 +1,4 @@
-import jwt from "jsonwebtoken";
-import { NextFunction, Request, Response, Router } from "express";
+import { Request, Response, Router } from "express";
 import {
   getDatabase,
   ref,
@@ -15,30 +14,9 @@ import {
   remove,
 } from "firebase/database";
 import EncryptionService from "../services/EncryptionService";
+import AuthenticationService from "../services/AuthenticationService";
 
 const testeApiFirebase = Router();
-
-export const verifyJWT = (
-  req: Request,
-  res: Response,
-  next: NextFunction
-  // eslint-disable-next-line consistent-return
-): Response | void => {
-  const token = req.headers["x-access-token"];
-  if (!token)
-    return res.status(401).json({ auth: false, message: "No token provided." });
-
-  // eslint-disable-next-line consistent-return
-  jwt.verify(token as string, process.env.SECRET as string, (err) => {
-    if (err)
-      return res
-        .status(500)
-        .json({ auth: false, message: "Failed to authenticate token." });
-    // se tudo estiver ok, salva no request para uso posterior
-    //    req.userId = decoded.id;
-    next();
-  });
-};
 
 testeApiFirebase.get("/", (request: Request, response: Response): void => {
   const dbRef = ref(getDatabase());
@@ -77,7 +55,7 @@ testeApiFirebase.get(
 
 testeApiFirebase.get(
   "/filtros",
-  verifyJWT,
+  AuthenticationService.verifyJWT,
   (request: Request, response: Response): void => {
     const dbRef = ref(getDatabase(), "users");
     const data = query(dbRef, orderByChild("ID"), equalTo(1));
