@@ -26,14 +26,14 @@ describe("SystemUserController", () => {
     expect(response.status).toBe(200);
   });
 
-  it("Should return 500 when request body is empty", async () => {
+  it("Should return 400 when request body is empty", async () => {
     const requestBody = {};
     const response = await request.post("/SystemUser").send(requestBody);
 
-    expect(response.status).toBe(500);
+    expect(response.status).toBe(400);
   });
 
-  it("Should return 500 when request body is wrong", async () => {
+  it("Should return 400 when request body is wrong", async () => {
     const requestBody = {
       emailUser: "novoUsuario@gmail.com",
       passwordNewUser: "senha123",
@@ -42,7 +42,7 @@ describe("SystemUserController", () => {
     };
     const response = await request.post("/SystemUser").send(requestBody);
 
-    expect(response.status).toBe(500);
+    expect(response.status).toBe(400);
   });
 
   it("Should return 400 when user already exists", async () => {

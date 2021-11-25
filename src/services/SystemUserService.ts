@@ -2,6 +2,7 @@ import CreateSystemUserRequest from "../dto/requests/SystemUserDtoRequest";
 import SystemUserMapper from "../mapper/SystemUserMapper";
 import ESystemUserType from "../models/ESystemUserType";
 import ServiceResponse from "../models/ServiceResponse";
+import EmailService from "./EmailService";
 
 export default class SystemUserService {
   public static createUser = async (
@@ -21,7 +22,7 @@ export default class SystemUserService {
       response.errorMessages.push("Usuario atual nao e administrador.");
       return response;
     }
-    await SystemUserMapper.insertSystemUser(
+    const randomPasswordCreated = await SystemUserMapper.insertSystemUser(
       body.emailNewUser,
       body.typeNewUser
     );
@@ -32,6 +33,11 @@ export default class SystemUserService {
 
     if (!newUserWasCreated) {
       response.errorMessages.push("Nao foi possivel criar o usuario.");
+    } else {
+      await SystemUserService.sendEmailConfirmation(
+        body.emailNewUser,
+        randomPasswordCreated
+      );
     }
 
     return response;
@@ -41,5 +47,27 @@ export default class SystemUserService {
     const user = await SystemUserMapper.getUserByEmail(email);
 
     return user?.type === ESystemUserType.admin;
+  };
+
+  public static sendEmailConfirmation = async (
+    userEmail: string,
+    userPassword: string
+  ): Promise<void> => {
+    const subject = "Bem vindo(a) ao Bota Pra Rodar!";
+    const htmlBody = `
+    <h3>Olá, bem vindo(a)!</h3>
+    <p>Obrigada por se registrar no sistema do Bota pra Rodar. 🚲🚲🚲</p>
+    
+    <p>Você pode acessar o sistema <a href='https://botaprarodar.netlify.app/'>Bota Pra Rodar - Web</a> 
+com sua senha de acesso temporária: ${userPassword}</p>
+    <p>Solicitamos que altere sua senha em seu primeiro acesso.</p>
+
+    <p>Em caso de problemas de acesso, entrar em contato com: contato@ameciclo.org</p>
+
+    <p>Favor não responder a este e-mail.</p>
+
+    <p>Obrigada por nos ajudar neste projeto!</p> `;
+
+    await EmailService.sendEmail([userEmail], subject, htmlBody);
   };
 }

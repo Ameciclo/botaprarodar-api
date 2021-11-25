@@ -1,4 +1,5 @@
 import { Request, Response, Router } from "express";
+import { ValidationError } from "class-validator";
 import SystemUserService from "../services/SystemUserService";
 import CreateSystemUserRequest from "../dto/requests/SystemUserDtoRequest";
 
@@ -12,6 +13,7 @@ systemUserController.post(
         const responseCreateUser = await SystemUserService.createUser(
           createUserRequest
         );
+
         if (responseCreateUser.success()) {
           response.status(200).send();
         } else {
@@ -19,6 +21,9 @@ systemUserController.post(
             .status(400)
             .send(responseCreateUser.errorMessages.join(", "));
         }
+      })
+      .catch((err: ValidationError) => {
+        response.status(400).send(err);
       })
       .catch((err: Error) => {
         response.status(500).send(err.message);

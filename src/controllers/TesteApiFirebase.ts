@@ -13,10 +13,36 @@ import {
   update,
   remove,
 } from "firebase/database";
+import nodemailer from "nodemailer";
 import EncryptionService from "../services/EncryptionService";
 import AuthenticationService from "../services/AuthenticationService";
 
 const testeApiFirebase = Router();
+
+testeApiFirebase.get(
+  "/email",
+  async (request: Request, response: Response): Promise<void> => {
+    // create reusable transporter object using the default SMTP transport
+    const transporter = nodemailer.createTransport({
+      host: "smtp.gmail.com",
+      port: 465,
+      secure: true, // true for 465, false for other ports
+      auth: {
+        user: "botaprarodar.web@gmail.com", // generated ethereal user
+        pass: "D;]'}nM.#[RxmxPd?MIl", // generated ethereal password
+      },
+    });
+
+    // send mail with defined transport object
+    await transporter.sendMail({
+      from: '"Bota pra Rodar - Ameciclo" <botaprarodar.web@gmail.com>', // sender address
+      to: "rodrigocorrei@gmail.com, analuiza.braga@thoughtworks.com, rodrigo.correia@thoughtworks.com", // list of receivers
+      subject: "Hello ✔", // Subject line
+      html: "<a href='www.google.com'>link text</a>", // html body
+    });
+    response.status(200).send();
+  }
+);
 
 testeApiFirebase.get("/", (request: Request, response: Response): void => {
   const dbRef = ref(getDatabase());

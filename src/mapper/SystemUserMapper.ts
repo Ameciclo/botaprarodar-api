@@ -57,7 +57,7 @@ export default class SystemUserMapper {
   public static insertSystemUser = async (
     email: string,
     type: ESystemUserType
-  ): Promise<void> => {
+  ): Promise<string> => {
     const randomPassword = Math.random().toString(36).slice(-10);
     const passwordEncrypted = await EncryptionService.encryptPassword(
       randomPassword
@@ -67,5 +67,6 @@ export default class SystemUserMapper {
       password: passwordEncrypted,
       type,
     });
+    return randomPassword;
   };
 }

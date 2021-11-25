@@ -3,12 +3,15 @@ import SystemUserMapper from "../mapper/SystemUserMapper";
 import ESystemUserType from "../models/ESystemUserType";
 import { SystemUser } from "../models/SystemUser";
 import SystemUserService from "./SystemUserService";
+import EmailService from "./EmailService";
 
 jest.mock("../mapper/SystemUserMapper");
 const mockedSystemUserMapper = SystemUserMapper as jest.Mocked<
   typeof SystemUserMapper
 >;
 
+jest.mock("./EmailService");
+const mockedEmailService = EmailService as jest.Mocked<typeof EmailService>;
 describe("SystemUserService", () => {
   it("Should fail at creating user because user already exists", async () => {
     const createUserRequest: CreateSystemUserRequest = {
@@ -97,6 +100,7 @@ describe("SystemUserService", () => {
     mockedSystemUserMapper.getUserByEmail.mockResolvedValue(systemUserAdmin);
     mockedSystemUserMapper.userExistsByEmail.mockResolvedValueOnce(false);
     mockedSystemUserMapper.userExistsByEmail.mockResolvedValue(true);
+    mockedEmailService.sendEmail.mockImplementation(jest.fn());
 
     const expectedErrorMessage = "";
 
