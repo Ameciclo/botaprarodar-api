@@ -70,4 +70,19 @@ com sua senha de acesso temporária: ${userPassword}</p>
 
     await EmailService.sendEmail([userEmail], subject, htmlBody);
   };
+
+  public static updatePassword = async (
+    email: string,
+    newPassword: string
+  ): Promise<ServiceResponse<unknown>> => {
+    const response = new ServiceResponse<unknown>();
+
+    await SystemUserMapper.updateSystemUserPassword(email, newPassword).catch(
+      (error) => {
+        response.errorMessages.push(error.message);
+      }
+    );
+
+    return response;
+  };
 }

@@ -111,4 +111,37 @@ describe("SystemUserService", () => {
 
     return expect(actualErrormessage).toBe(expectedErrorMessage);
   });
+
+  it("Should update password sucessfully", async () => {
+    const systemUser: SystemUser = {
+      id: "abcd123",
+      email: "admin@gmail.com",
+      password: "oldPassword123",
+      type: ESystemUserType.admin,
+    };
+    mockedSystemUserMapper.getUserByEmail.mockResolvedValue(systemUser);
+    mockedSystemUserMapper.updateSystemUserPassword.mockResolvedValue();
+
+    const actualResponse = await SystemUserService.updatePassword(
+      systemUser.email,
+      "newPassword123"
+    );
+
+    expect(actualResponse.success()).toBe(true);
+  });
+
+  it("Should fail at update password", async () => {
+    mockedSystemUserMapper.updateSystemUserPassword.mockRejectedValue(
+      new Error("Ususario nao existe.")
+    );
+
+    const actualResponse = await SystemUserService.updatePassword(
+      "systemUseremail@gmail.com",
+      "newPassword123"
+    );
+
+    expect(actualResponse.errorMessages).toStrictEqual([
+      "Ususario nao existe.",
+    ]);
+  });
 });

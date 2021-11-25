@@ -2,6 +2,7 @@ import supertest from "supertest";
 import { app, server } from "../index";
 import ServiceResponse from "../models/ServiceResponse";
 import SystemUserService from "../services/SystemUserService";
+import AuthenticationService from "../services/AuthenticationService";
 
 const request = supertest(app);
 
@@ -10,7 +11,17 @@ const mockedSystemUserService = SystemUserService as jest.Mocked<
   typeof SystemUserService
 >;
 
+jest.mock("../services/AuthenticationService");
+const mockedAuthenticationService = AuthenticationService as jest.Mocked<
+  typeof AuthenticationService
+>;
 describe("SystemUserController", () => {
+  beforeEach(() => {
+    mockedAuthenticationService.verifyJWT.mockImplementation((req, res, next) =>
+      next()
+    );
+  });
+
   it("Should create user sucessfully", async () => {
     const mockedServiceResponse = new ServiceResponse();
     mockedSystemUserService.createUser.mockResolvedValue(mockedServiceResponse);
@@ -60,6 +71,37 @@ describe("SystemUserController", () => {
 
     expect(response.status).toBe(400);
     expect(response.text).toBe("Usuario ja existe");
+  });
+
+  it("Should update user password sucessfully", async () => {
+    const requestBody = {
+      email: "novoUsuario@gmail.com",
+      password: "senha123",
+    };
+
+    const mockedServiceResponse = new ServiceResponse();
+    mockedSystemUserService.updatePassword.mockResolvedValue(
+      mockedServiceResponse
+    );
+
+    const response = await request
+      .put("/SystemUser/password")
+      .send(requestBody);
+
+    expect(response.status).toBe(200);
+  });
+
+  it("Should return 400 when update password body is wrong", async () => {
+    const requestBody = {
+      email: "novoUsuario@gmail.com",
+      type: "senha123",
+    };
+
+    const response = await request
+      .put("/SystemUser/password")
+      .send(requestBody);
+
+    expect(response.status).toBe(400);
   });
 
   afterAll(() => {

@@ -69,4 +69,17 @@ export default class SystemUserMapper {
     });
     return randomPassword;
   };
+
+  public static updateSystemUserPassword = async (
+    email: string,
+    newPassword: string
+  ): Promise<void> => {
+    const user = await this.getUserByEmail(email);
+    if (user) {
+      user.password = await EncryptionService.encryptPassword(newPassword);
+      GenericMapper.update("SystemUser", user.id, user);
+    } else {
+      throw new Error("Usuario nao existe.");
+    }
+  };
 }
