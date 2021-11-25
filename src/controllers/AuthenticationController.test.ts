@@ -38,7 +38,6 @@ describe("AuthenticationController", () => {
     const response = await request.post("/login").send(requestBody);
 
     expect(response.status).toBe(400);
-    expect(response.text).toBe("Usuario nao existe.");
   });
 
   afterAll(() => {

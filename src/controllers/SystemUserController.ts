@@ -38,19 +38,20 @@ systemUserController.put(
   "/password",
   AuthenticationService.verifyJWT,
   async (request: Request, response: Response): Promise<void> => {
-    UpdatePasswordRequest.convertBodyToRequest(request.body)
-      .then(async (createUserRequest) => {
-        const updatePasswordResponse = await SystemUserService.updatePassword(
-          createUserRequest.email,
-          createUserRequest.password
-        );
-        if (updatePasswordResponse.success()) {
-          response.status(200).send();
-        }
-      })
-      .catch((err: ValidationError) => {
-        response.status(400).send(err);
-      });
+    try {
+      const createUserRequest =
+        await UpdatePasswordRequest.convertBodyToRequest(request.body);
+
+      const updatePasswordResponse = await SystemUserService.updatePassword(
+        createUserRequest.email,
+        createUserRequest.password
+      );
+      if (updatePasswordResponse.success()) {
+        response.status(200).send();
+      }
+    } catch (err) {
+      response.status(400).send(err);
+    }
   }
 );
 
