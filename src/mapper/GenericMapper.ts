@@ -10,33 +10,40 @@ import {
 } from "firebase/database";
 
 export default class GenericMapper {
-  public static insert = (path: string, dataToInsert: {}): void => {
+  public static insert = async (
+    path: string,
+    dataToInsert: {}
+  ): Promise<void> => {
     const db = getDatabase();
     const postListRef = ref(db, path);
     const newPostRef = push(postListRef);
 
-    set(newPostRef, dataToInsert);
+    await set(newPostRef, dataToInsert);
   };
 
-  public static delete = (path: string, id: string): void => {
+  public static delete = async (path: string, id: string): Promise<void> => {
     const db = getDatabase();
     const postListRef = ref(db, `${path}/${id}`);
 
-    remove(postListRef);
+    await remove(postListRef);
   };
 
-  public static update = (path: string, id: string, dataToUpdate: {}): void => {
+  public static update = async (
+    path: string,
+    id: string,
+    dataToUpdate: {}
+  ): Promise<void> => {
     const db = getDatabase();
     const postListRef = ref(db, `${path}/${id}`);
 
-    update(postListRef, dataToUpdate);
+    await update(postListRef, dataToUpdate);
   };
 
-  public static getById = (path: string, id: string): {} => {
+  public static getById = async (path: string, id: string): Promise<{}> => {
     const dbRef = ref(getDatabase());
     let data = {};
 
-    get(child(dbRef, `${path}/${id}`)).then(async (snapshot) => {
+    await get(child(dbRef, `${path}/${id}`)).then(async (snapshot) => {
       if (snapshot.exists()) {
         data = await snapshot.val();
       }

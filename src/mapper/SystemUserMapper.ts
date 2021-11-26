@@ -77,7 +77,9 @@ export default class SystemUserMapper {
     const user = await this.getUserByEmail(email);
     if (user) {
       user.password = await EncryptionService.encryptPassword(newPassword);
-      GenericMapper.update("SystemUser", user.id, user);
+      await GenericMapper.update("SystemUser", user.id, {
+        password: user.password,
+      });
     } else {
       throw new Error("Usuario nao existe.");
     }
