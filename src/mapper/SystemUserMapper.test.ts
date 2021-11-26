@@ -75,4 +75,26 @@ describe("SystemUserMapper", () => {
       "SystemUser deve conter o campo tipo."
     );
   });
+  it("Should call function to update userpassword", async () => {
+    mockedGenericMapper.getAll.mockResolvedValueOnce(AllUsersMock);
+    await SystemUserMapper.updateSystemUserPassword(
+      "Fulano@gmail.com",
+      "newPassword"
+    );
+    expect(GenericMapper.update).toHaveBeenCalled();
+  });
+
+  xit("Should throw error when user does not exist", async () => {
+    mockedGenericMapper.getAll.mockResolvedValue({});
+
+    function updatePassword() {
+      SystemUserMapper.updateSystemUserPassword(
+        "NeverLand@gmail.com",
+        "newPassword"
+      );
+    }
+    expect(updatePassword).rejects.toMatch("Usuario nao existe.");
+
+    expect(GenericMapper.update).not.toHaveBeenCalled();
+  });
 });

@@ -30,7 +30,7 @@ export default class SystemUserMapper {
       systemUser = { id, ...json };
       return systemUser;
     }
-    throw new Error(errorList.join(", ")).message;
+    throw new Error(errorList.join(", "));
   };
 
   private static convertJsonToSystemUserAll = (json: any): SystemUser[] => {
